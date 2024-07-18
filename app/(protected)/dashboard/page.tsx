@@ -20,9 +20,10 @@ import { User } from "@prisma/client";
 import { members } from "@/actions/admin";
 import io from "socket.io-client";
 
+
 const DashboardPage = () => {
+
   const { data: session, status } = useSession();
-  const router = useRouter();
 
   const [sensorData, setSensorData] = useState<Sensor[]>([]);
   const [users, setUsers] = useState<User[]>([]);
@@ -30,6 +31,7 @@ const DashboardPage = () => {
     latitude: 16.41516667,
     longitude: 120.59559444,
   });
+
 
   const fetchUsers = async () => {
     const response = await members();
@@ -43,73 +45,77 @@ const DashboardPage = () => {
     }
   };
   const fetchSensorData = async () => {
-    if (status === "authenticated") {
+    if (session) {
       const res = await getAllSensorByUserId(session!.user!.id!);
-      if (res == null) {
-        throw new Error("Failed to fetch data");
+      if (res != null) {
+        setSensorData(res);
       }
-      setSensorData(res);
     }
   };
 
   useEffect(() => {
-    if (session!.user!.role! === UserRole.ADMIN) {
-      fetchUsers();
-    } else {
-      fetchSensorData();
+    if (session) {
+      if (session!.user!.role! === UserRole.ADMIN) {
+        fetchUsers();
+      } else {
+        fetchSensorData();
+      }
     }
   }, [sensorData]);
 
-  return (
-    <ScrollArea className="h-full">
-      <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
-        <div className="flex items-center justify-between space-y-2">
-          <h2 className="text-3xl font-bold tracking-tight">
-            Hi{" "}
-            {session!.user!.role! === UserRole.ADMIN
-              ? "Admin!"
-              : session!.user!.name!}
-            , Welcome Back 👋
-          </h2>
+
+  if (session) {
+    return (
+      <ScrollArea className="h-full">
+        <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
+          <div className="flex items-center justify-between space-y-2">
+            <h2 className="text-3xl font-bold tracking-tight">
+              Hi{" "}
+              {session!.user!.role! === UserRole.ADMIN
+                ? "Admin!"
+                : session!.user!.name!}
+              , Welcome Back 👋
+            </h2>
+          </div>
+          {session!.user!.role! === UserRole.ADMIN ? (
+            <>
+              <MapsCard data={users} center={mapCenter} />
+              <UsersCard
+                data={users}
+                onLocate={(latitude, longitude) =>
+                  setMapCenter({ latitude, longitude })
+                }
+              />
+            </>
+          ) : (
+            // For Members
+            <>
+              <Tabs defaultValue="overview" className="space-y-4">
+                <TabsContent value="overview" className="space-y-4">
+                  <div className="grid grid-cols-4 gap-4 h-auto">
+                    <ContactsCard contactName="John Lee" />
+                    <BfpCard />
+                  </div>
+                </TabsContent>
+                <TabsContent value="overview" className="space-y-4">
+                  <div className="flex items-center justify-between space-y-2 mt-6">
+                    <h2 className="text-2xl font-bold tracking-tight">
+                      Available Sensors
+                    </h2>
+                  </div>
+                  <div className="grid grid-cols-4 gap-4 h-auto">
+                    {sensorData.map((sensor: Sensor, id: number) => (
+                      <SensorCard key={id} data={sensor} />
+                    ))}
+                    <AddSensorCard data="love" />
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </>
+          )}
         </div>
-        {session!.user!.role! === UserRole.ADMIN ? (
-          <>
-            <MapsCard data={users} center={mapCenter} />
-            <UsersCard
-              data={users}
-              onLocate={(latitude, longitude) =>
-                setMapCenter({ latitude, longitude })
-              }
-            />
-          </>
-        ) : (
-          // For Members
-          <>
-            <Tabs defaultValue="overview" className="space-y-4">
-              <TabsContent value="overview" className="space-y-4">
-                <div className="grid grid-cols-4 gap-4 h-auto">
-                  <ContactsCard contactName="John Lee" />
-                  <BfpCard />
-                </div>
-              </TabsContent>
-              <TabsContent value="overview" className="space-y-4">
-                <div className="flex items-center justify-between space-y-2 mt-6">
-                  <h2 className="text-2xl font-bold tracking-tight">
-                    Available Sensors
-                  </h2>
-                </div>
-                <div className="grid grid-cols-4 gap-4 h-auto">
-                  {sensorData.map((sensor: Sensor, id: number) => (
-                    <SensorCard key={id} data={sensor} />
-                  ))}
-                  <AddSensorCard data="love" />
-                </div>
-              </TabsContent>
-            </Tabs>
-          </>
-        )}
-      </div>
-    </ScrollArea>
-  );
+      </ScrollArea>
+    );
+  }
 };
 export default DashboardPage;

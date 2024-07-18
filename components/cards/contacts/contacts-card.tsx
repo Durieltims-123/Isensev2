@@ -31,7 +31,6 @@ export const ContactsCard: React.FC<ContactsCardProps> = ({ contactName }) => {
 
   const fetchContacts = async () => {
     const response = await getContacts(session!.user!.id!);
-    console.log(response)
     if (response == null) {
       throw new Error("Failed to fetch data");
     }

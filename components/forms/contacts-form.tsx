@@ -45,7 +45,6 @@ export const ContactsForm: React.FC<ContactsFormProps> = ({ initialData }) => {
     setLoading(true);
     startTransition(() => {
       createContact(values).then((data) => {
-        console.log(data);
         setLoading(false);
         setError(data?.error);
         if (data?.success) {
