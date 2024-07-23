@@ -71,13 +71,6 @@ export const {
 
       return session;
     },
-    async redirect({ url, baseUrl }) {
-      // Redirect to home page after sign out
-      if (url === '/auth/signout') {
-        return baseUrl;
-      }
-      return url;
-    },
     async jwt({ token }) {
       if (!token.sub) return token;
 

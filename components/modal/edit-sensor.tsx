@@ -30,12 +30,13 @@ export const EditSensorModal: React.FC<EditSensorModalProps> = ({
   if (!isMounted) {
     return null;
   }
-  const initData = {
-    sensorId: initialData.id,
-    sensorName: initialData.sensorName,
-    location: initialData.location,
-  }
-
+  const initData = initialData
+    ? {
+        sensorId: initialData.id,
+        sensorName: initialData.sensorName,
+        location: initialData.location,
+      }
+    : null;
   return (
     <Modal
       title="Edit sensor"

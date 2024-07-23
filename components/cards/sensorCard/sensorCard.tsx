@@ -25,7 +25,7 @@ interface SensorCardProps {
 export const SensorCard: React.FC<SensorCardProps> = ({ data }) => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-
+  const onConfirm = async () => {};
   //   const onConfirm = async () => {
   //     const res = await createSensor(data);
   //     if (res !== null) {
@@ -35,7 +35,7 @@ export const SensorCard: React.FC<SensorCardProps> = ({ data }) => {
   //     }
   //   };
 
-  const onConfirm = async () => {};
+  
 
   const [percent, setPercent] = useState<number>();
   const socket = useMemo(() => io("http://localhost:8080"), []);

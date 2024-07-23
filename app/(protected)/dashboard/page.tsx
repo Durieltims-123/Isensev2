@@ -15,7 +15,7 @@ import { BfpCard } from "@/components/cards/bfp/bfp-card";
 import { MapsCard } from "@/components/cards/maps/maps-card";
 import { UsersCard } from "@/components/cards/users/users-card";
 import { AddSensorCard } from "@/components/cards/sensorCard/addSensor";
-import { getAllSensorByUserId, getSensorById } from "@/data/sensor";
+import { getAllSensorByUserId, getAllSensors, getSensorById } from "@/data/sensor";
 import { User } from "@prisma/client";
 import { members } from "@/actions/admin";
 import io from "socket.io-client";
@@ -26,6 +26,7 @@ const DashboardPage = () => {
   const { data: session, status } = useSession();
 
   const [sensorData, setSensorData] = useState<Sensor[]>([]);
+  const [sensorDataAdmin, setSensorDataAdmin] = useState<Sensor[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [mapCenter, setMapCenter] = useState({
     latitude: 16.41516667,
@@ -53,10 +54,20 @@ const DashboardPage = () => {
     }
   };
 
+  const fetchSensorDataAdmin = async () => {
+    if (session) {
+      const res = await getAllSensors();
+      if (res != null) {
+        setSensorDataAdmin(res);
+      }
+    }
+  };
+
   useEffect(() => {
     if (session) {
       if (session!.user!.role! === UserRole.ADMIN) {
         fetchUsers();
+        fetchSensorDataAdmin();
       } else {
         fetchSensorData();
       }
@@ -82,6 +93,7 @@ const DashboardPage = () => {
               <MapsCard data={users} center={mapCenter} />
               <UsersCard
                 data={users}
+                sensorDatax={sensorDataAdmin}
                 onLocate={(latitude, longitude) =>
                   setMapCenter({ latitude, longitude })
                 }
