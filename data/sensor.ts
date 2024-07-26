@@ -113,7 +113,7 @@ export const updateLastReading = async (
         sensorId: id,
       },
       data: {
-        smokeConsentration: lastReadingData.smokeConsentration,
+        smokeConcentration: lastReadingData.smokeConcentration,
       },
     });
     return lastReading;
