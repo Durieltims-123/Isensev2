@@ -34,7 +34,7 @@ export const SensorCard: React.FC<SensorCardProps> = ({ data }) => {
   const socket = useMemo(() => io("http://localhost:8080"), []);
 
   const getGaugeData = () => {
-    socket.emit("getSmokeLevel", data.id);
+    socket.emit("getSmokeConcentration", data.id);
   };
 
   useEffect(() => {
@@ -42,17 +42,17 @@ export const SensorCard: React.FC<SensorCardProps> = ({ data }) => {
   }, []);
 
   useEffect(() => {
-    // Listen for smokeLevel event from the server
+    // Listen for smokeConcentration event from the server
 
-    socket.on("smokeLevel", (smokeLevel) => {
-      const res = convertToPercentage(smokeLevel);
+    socket.on("smokeConcentration", (smokeConcentration) => {
+      const res = convertToPercentage(smokeConcentration);
       setPercent(res);
     });
 
     // Listen for lastReadingUpdated event from the server
-    socket.on("lastReadingUpdated", ({ sensorId, smokeLevel }) => {
+    socket.on("lastReadingUpdated", ({ sensorId, smokeConcentration }) => {
       // Update the percent if the updated sensorId matches the one we are interested in
-      const res = convertToPercentage(smokeLevel);
+      const res = convertToPercentage(smokeConcentration);
       if (sensorId !== null)  {
         setPercent(res);
       }
@@ -64,7 +64,7 @@ export const SensorCard: React.FC<SensorCardProps> = ({ data }) => {
     });
 
     return () => {
-      socket.off("smokeLevel");
+      socket.off("smokeConcentration");
       socket.off("error");
     };
     // const interval = setInterval(getGaugeData, 5000); // Poll every 5 seconds
