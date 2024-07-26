@@ -1,6 +1,7 @@
 "use client";
 
 import { CardWrapper } from "@/components/cards/users/card-wrapper";
+import { AdminSensorModal } from "@/components/modal/admin-sensor-modal";
 import { EditSensorModal } from "@/components/modal/edit-sensor";
 import { Button } from "@/components/ui/button";
 import { Sensor, User } from "@prisma/client";
@@ -29,7 +30,7 @@ export const UsersCard: React.FC<UsersCardProps> = ({ data, onLocate, sensorData
   
   return (
     <>
-      <EditSensorModal
+      <AdminSensorModal
         isOpen={open}
         onClose={() => setOpen(false)}
         onConfirm={onConfirm}

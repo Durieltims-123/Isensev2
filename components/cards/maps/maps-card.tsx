@@ -88,7 +88,7 @@ export const MapsCard: React.FC<MapsCardProps> = ({ data, center }) => {
               latitude={Number(popupInfo.latitude)}
               onClose={() => setPopupInfo(null)}
             >
-              <div>{popupInfo.name} | </div>
+              <div>{popupInfo.name}</div>
             </Popup>
           )}
          

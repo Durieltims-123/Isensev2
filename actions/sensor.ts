@@ -114,7 +114,9 @@ export const deleteSensor = async ( sensorId:string) => {
   }
 
   if (fetchData.userId !== currentUserData.id) {
-    return { error: "You do not have permission to delete this sensor!" };
+    if(currentUserData.role !== "ADMIN"){
+      return { error: "You do not have permission to delete this sensor!" };
+    }
   }
 
   try {

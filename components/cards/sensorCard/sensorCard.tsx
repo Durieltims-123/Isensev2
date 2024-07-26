@@ -106,7 +106,7 @@ export const SensorCard: React.FC<SensorCardProps> = ({ data }) => {
           />
         </div>
         <div className="flex items-center justify-between p-4 ">
-          <h3>{data.sensorName}</h3>
+          <h3 className="text-sm md:text-lg">{data.sensorName}</h3>
           <Button className="text-xs md:text-sm" onClick={() => setOpen(true)}>
             Settings
           </Button>
