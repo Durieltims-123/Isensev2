@@ -8,15 +8,8 @@ import GaugeChart from "react-gauge-chart";
 import { useEffect, useMemo, useState } from "react";
 import { io } from "socket.io-client";
 import { EditSensorModal } from "@/components/modal/edit-sensor";
+import { Sensor } from "@prisma/client";
 
-interface Sensor {
-  id: string;
-  sensorName: string;
-  status: string;
-  location: string;
-  lastReadingId: string | null;
-  userId: string;
-}
 
 interface SensorCardProps {
   data: Sensor;
