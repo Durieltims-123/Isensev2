@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 
 import { db } from "@/lib/db";
 import { RegisterSchema } from "@/schemas";
-import { getUserByEmail } from "@/data/user";
+import { getUserByUsername } from "@/data/user";
 import { UserRole } from "@prisma/client";
 
 export const register = async (values: z.infer<typeof RegisterSchema>) => {
@@ -15,14 +15,14 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
     return { error: "Invalid fields!" };
   }
 
-  const { email, password, name, lat, lng, address, confirmPassword, phone } =
+  const { username, password, name, lat, lng, address, confirmPassword, phone } =
     validatedFields.data;
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const existingUser = await getUserByEmail(email);
+  const existingUser = await getUserByUsername(username);
 
   if (existingUser) {
-    return { error: "Email already in use!" };
+    return { error: "Username already in use!" };
   }
 
   if (password !== confirmPassword) {
@@ -32,7 +32,7 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
   await db.user.create({
     data: {
       name,
-      email,
+      username,
       address,
       phone,
       latitude:lat,
@@ -53,14 +53,14 @@ export const registerAdmin = async (values: z.infer<typeof RegisterSchema>) => {
     return { error: "Invalid fields!" };
   }
 
-  const { email, password, name, address, confirmPassword, phone } =
+  const { username, password, name, address, confirmPassword, phone } =
     validatedFields.data;
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const existingUser = await getUserByEmail(email);
+  const existingUser = await getUserByUsername(username);
 
   if (existingUser) {
-    return { error: "Email already in use!" };
+    return { error: "Username already in use!" };
   }
 
   if (password !== confirmPassword) {
@@ -71,7 +71,7 @@ export const registerAdmin = async (values: z.infer<typeof RegisterSchema>) => {
   await db.user.create({
     data: {
       name,
-      email,
+      username,
       address,
       phone,
       emailVerified: dateNow.toISOString(),

@@ -6,7 +6,7 @@ import { AuthError } from "next-auth";
 // import { db } from "@/lib/db";
 import { signIn } from "@/auth";
 import { LoginSchema } from "@/schemas";
-import { getUserByEmail } from "@/data/user";
+import {  getUserByUsername } from "@/data/user";
 // import { getTwoFactorTokenByEmail } from "@/data/two-factor-token";
 // import { sendVerificationEmail, sendTwoFactorTokenEmail } from "@/lib/mail";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
@@ -26,11 +26,11 @@ export const login = async (
     return { error: "Invalid fields!" };
   }
 
-  const { email, password } = validatedFields.data;
-  const existingUser = await getUserByEmail(email);
+  const { username, password } = validatedFields.data;
+  const existingUser = await getUserByUsername(username);
 
-  if (!existingUser || !existingUser.email || !existingUser.password) {
-    return { error: "Email does not exist!" };
+  if (!existingUser || !existingUser.username || !existingUser.password) {
+    return { error: "Username does not exist!" };
   }
 
   // if (!existingUser.emailVerified) {
@@ -93,7 +93,7 @@ export const login = async (
 
   try {
     await signIn("credentials", {
-      email,
+      username,
       password,
       redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
     });

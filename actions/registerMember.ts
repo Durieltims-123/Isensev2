@@ -4,7 +4,7 @@ import * as z from "zod";
 
 import { db } from "@/lib/db";
 import { MemberRegisterSchema } from "@/schemas";
-import { getUserByEmail, getUserByName } from "@/data/user";
+import { getUserByUsername, getUserByName } from "@/data/user";
 import { UserRole } from "@prisma/client";
 import bcrypt from "bcryptjs";
 export const registerMember = async (
@@ -16,13 +16,13 @@ export const registerMember = async (
     return { error: "Invalid fields!" };
   }
 
-  const { name, email, phone, address, age, gender, id, idType, password, confirmPassword } = validatedFields.data;
+  const { name, username, phone, address, age, gender, id, idType, password, confirmPassword } = validatedFields.data;
 
-  const existingUser = await getUserByEmail(email);
+  const existingUser = await getUserByUsername(username);
   const existingUser2 = await getUserByName(name);
 
   if (existingUser) {
-    return { error: "Email already in use!" };
+    return { error: "Username already in use!" };
   }
 
   if (existingUser2) {
@@ -39,7 +39,7 @@ export const registerMember = async (
   await db.user.create({
     data: {
       name,
-      email,
+      username,
       phone,
       address,
       emailVerified: dateNow.toISOString(),

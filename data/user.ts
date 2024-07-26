@@ -1,9 +1,9 @@
 import { PrismaClient, User, LastReading, UserRole } from "@prisma/client";
 const prisma = new PrismaClient();
 
-export const getUserByEmail = async (email: string) => {
+export const getUserByUsername = async (username: string) => {
   try {
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await prisma.user.findUnique({ where: { username } });
 
     return user;
   } catch {

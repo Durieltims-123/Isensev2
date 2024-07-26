@@ -59,7 +59,7 @@ export const MemberRegistrationForm = () => {
     resolver: zodResolver(MemberRegisterSchema),
     defaultValues: {
       name: undefined,
-      email: undefined,
+      username: undefined,
       phone: undefined,
       address: undefined,
       gender: undefined,
@@ -107,13 +107,13 @@ export const MemberRegistrationForm = () => {
             />
             <FormField
               control={form.control}
-              name="email"
+              name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Username</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Enter your email..."
+                      placeholder="Enter your username..."
                       disabled={isPending}
                       {...field}
                     />
@@ -203,7 +203,7 @@ export const MemberRegistrationForm = () => {
                       <Input
                         type="address"
                         placeholder="Enter your address..."
-                        disabled={isPending}
+                        disabled={true}
                         {...field}
                       />
                       <Button variant="outline" size="icon" >
