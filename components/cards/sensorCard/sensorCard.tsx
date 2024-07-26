@@ -87,7 +87,7 @@ export const SensorCard: React.FC<SensorCardProps> = ({ data }) => {
     }
   
     const percentage = (value / reference) * 100;
-    return percentage;
+    return value;
   }
 
   return (
