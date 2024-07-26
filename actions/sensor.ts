@@ -15,7 +15,7 @@ export const getLastReading = async (id: string) => {
     const sensorReading = await db.lastReading.findUnique({
       where: { id: fetchData.lastReadingId! },
       select: {
-        smokeLevel: true,
+        smokeConsentration: true,
       },
     });
     revalidatePath(`/dashboard`)
@@ -79,7 +79,7 @@ export const createSensorData = async (
 
     const initialLastReading = await db.lastReading.create({
       data: {
-        smokeLevel: 0,
+        smokeConsentration: 0,
         lpg: 0,
         co:0,
         sensorId: newSensor.id,

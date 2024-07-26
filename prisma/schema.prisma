@@ -50,12 +50,12 @@ model Contact {
 }
 
 model LastReading {
-  id         String @id @default(auto()) @map("_id") @db.ObjectId
-  lpg        Float
-  co         Float
-  smokeLevel Float
-  sensor     Sensor @relation(fields: [sensorId], references: [id])
-  sensorId   String @unique @db.ObjectId
+  id                 String @id @default(auto()) @map("_id") @db.ObjectId
+  lpg                Float
+  co                 Float
+  smokeConsentration Float
+  sensor             Sensor @relation(fields: [sensorId], references: [id])
+  sensorId           String @unique @db.ObjectId
 }
 
 model Sensor {
