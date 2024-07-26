@@ -74,13 +74,14 @@ export const createSensorData = async (
   const userId = currentUserData.id;
   try {
     const newSensor = await db.sensor.create({
-      data: { id:sensorId, sensorName, location, status: "OK", userId: userId },
+      data: { id:sensorId, sensorName, location, registered: true, active:false, userId: userId },
     });
 
     const initialLastReading = await db.lastReading.create({
       data: {
         smokeLevel: 0,
-        gasConcentration: 0,
+        lpg: 0,
+        co:0,
         sensorId: newSensor.id,
       },
     });
