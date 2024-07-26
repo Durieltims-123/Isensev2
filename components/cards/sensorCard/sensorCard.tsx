@@ -71,8 +71,22 @@ export const SensorCard: React.FC<SensorCardProps> = ({ data }) => {
     // return () => clearInterval(interval)
   }, [socket]);
 
-  function convertToPercentage(value: any, reference = 50) {
-    const percentage = value / reference;
+  function convertToPercentage(value: number): number {
+    let reference: number;
+  
+    if (value >= 0 && value <= 50) {
+      reference = 50;
+    } else if (value >= 51 && value <= 100) {
+      reference = 100;
+    } else if (value >= 101 && value <= 150) {
+      reference = 150;
+    } else if (value >= 151) {
+      reference = 200; // Assuming danger level is up to 200 for percentage calculation
+    } else {
+      throw new Error("Value is out of expected range");
+    }
+  
+    const percentage = (value / reference) * 100;
     return percentage;
   }
 
@@ -90,12 +104,13 @@ export const SensorCard: React.FC<SensorCardProps> = ({ data }) => {
           <GaugeChart
             id="gauge-chart5"
             nrOfLevels={420}
-            arcsLength={[0.3, 0.5, 0.2]}
-            colors={["#5BE12C", "#F5CD19", "#EA4228"]}
+            arcsLength={[0.2, 0.4, 0.3, 0.2]}
+            colors={["#5BE12C", "#F5CD19", "#FFA500", "#EA4228"]}
             percent={percent}
             arcPadding={0.02}
             textColor="5BE12C"
             needleColor="#345243"
+            animate={false}
           />
         </div>
         <div className="flex items-center justify-between p-4 ">
