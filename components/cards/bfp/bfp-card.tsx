@@ -24,7 +24,7 @@ export const BfpCard = () => {
         </p>
         <Button
           onClick={() =>
-            window.open("https://www.facebook.com/bfpcarpublicinfo", "_blank")
+            window.open("https://www.facebook.com/profile.php?id=100063733010388", "_blank")
           }
         >
           CONTACT NOW
