@@ -30,14 +30,8 @@ export const AdminSensorModal: React.FC<AdminSensorModalProps> = ({
   if (!isMounted) {
     return null;
   }
-  const initData = initialData
-    ? {
-        sensorId: initialData.id,
-        sensorName: initialData.sensorName,
-        location: initialData.location,
-      }
-    : null;
-    const newInitData = initialData ? [initialData] : [];
+
+  const newInitData = initialData ? [initialData] : [];
   return (
     <Modal
       title="Edit sensor"

@@ -26,7 +26,7 @@ export const UsersCard: React.FC<UsersCardProps> = ({ data, onLocate, sensorData
     setSensorCard(userSensorData);
     setOpen(true);
   };
-
+  const defaultImgUrl = "https://utfs.io/f/612cf32a-4729-4649-b638-074983d0f3f7-1zbfv.png";
   
   return (
     <>
@@ -60,7 +60,7 @@ export const UsersCard: React.FC<UsersCardProps> = ({ data, onLocate, sensorData
                 width={30}
                 height={30}
                 alt="User avatar"
-                src="https://utfs.io/f/612cf32a-4729-4649-b638-074983d0f3f7-1zbfv.png"
+                src={user.imgUrl??defaultImgUrl}
               />
             </div>
             <div className="col-span-1">

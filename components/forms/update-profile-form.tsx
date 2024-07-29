@@ -5,7 +5,7 @@ import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { RegisterSchema } from "@/schemas";
+import { RegisterSchema, UpdateSchema } from "@/schemas";
 import { Input } from "@/components/ui/input";
 import {
   Form,
@@ -13,17 +13,26 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,  
+  FormMessage,
 } from "@/components/ui/form";
-import { CardWrapper } from "@/components/auth/card-wrapper"
+import { CardWrapper } from "@/components/auth/card-wrapper";
 import { Button } from "@/components/ui/button";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { register } from "@/actions/register";
 import { MapPinned } from "lucide-react";
 import { MapsModal } from "../cards/maps/maps-modal";
+import FileUpload from "../file-upload";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { updateUser } from "@/actions/user";
 
-export const RegisterForm = () => {
+interface UpdateProfileFormProps {
+  initialData: any | null;
+}
+
+export const UpdateProfileForm: React.FC<UpdateProfileFormProps> = ({
+  initialData,
+}) => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
@@ -32,33 +41,42 @@ export const RegisterForm = () => {
   const [open, setOpen] = useState(false);
   const [lat, setLat] = useState<number | null>(null);
   const [lng, setLng] = useState<number | null>(null);
-  const form = useForm<z.infer<typeof RegisterSchema>>({
-    resolver: zodResolver(RegisterSchema),
-    defaultValues: {
-      username: "",
-      password: "",
-      name: "",
-      address: "",
-      lat: 0,
-      lng: 0,
-      phone: "",
-    },
-  });
 
-  const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
+  const defaultValues = initialData
+    ? initialData
+    : {
+        username: "",
+        password: "",
+        name: "",
+        address: "",
+        lat: 0,
+        lng: 0,
+        imgUrl: [],
+        phone: "",
+      };
+
+  const form = useForm<z.infer<typeof UpdateSchema>>({
+    resolver: zodResolver(UpdateSchema),
+    defaultValues,
+  });
+  
+  const onSubmit = (values: z.infer<typeof UpdateSchema>) => {
     setError("");
     setSuccess("");
-    
+
     startTransition(() => {
-      register(values)
-        .then((data) => {
-          setError(data.error);
-          setSuccess(data.success);
-        });
+      updateUser(values).then((data) => {
+        setError(data.error);
+        setSuccess(data.success);
+      });
     });
   };
 
-  const handleAddressSelect = (location: { address: string; lat: number; lng: number }) => {
+  const handleAddressSelect = (location: {
+    address: string;
+    lat: number;
+    lng: number;
+  }) => {
     setAddress(location.address);
     setLat(location.lat);
     setLng(location.lng);
@@ -69,19 +87,30 @@ export const RegisterForm = () => {
 
   const onConfirm = async () => {};
   return (
-    <CardWrapper
-      headerLabel="Create an account"
-      subheaderLabel="Create your account to begin your iSense journey."
-      backButtonLabel="Already have an account?"
-      backButtonHref="/auth/login"
-      showSocial
-      >
+    <div className="w-full h-full">
       <Form {...form}>
-        <form 
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-6"
-          >
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-4">
+          {(!initialData || !initialData.imgUrl || initialData.imgUrl.length === 0) && (
+              <FormField
+                control={form.control}
+                name="imgUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Profile Picture</FormLabel>
+                    <FormControl>
+                      <FileUpload
+                        onChange={field.onChange}
+                        value={field.value}
+                        onRemove={field.onChange}
+                        uploadType={"imageUploader"}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             <FormField
               control={form.control}
               name="name"
@@ -93,12 +122,12 @@ export const RegisterForm = () => {
                       {...field}
                       disabled={isPending}
                       placeholder="John Doe"
-                      />
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
-              />
+            />
             <FormField
               control={form.control}
               name="username"
@@ -111,13 +140,13 @@ export const RegisterForm = () => {
                       disabled={isPending}
                       placeholder="john.doe"
                       type="text"
-                      />
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
-              />
-             <FormField
+            />
+            <FormField
               control={form.control}
               name="address"
               render={({ field }) => (
@@ -131,8 +160,12 @@ export const RegisterForm = () => {
                         disabled={true}
                         {...field}
                         value={address}
-                        />
-                      <Button variant="outline" size="icon" onClick={()=> setOpen(true)} >
+                      />
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => setOpen(true)}
+                      >
                         <MapPinned className="h-4 w-4" />
                       </Button>
                     </div>
@@ -147,13 +180,13 @@ export const RegisterForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                      <Input
-                        type="hidden"
-                        placeholder="Enter your address..."
-                        disabled={isPending}
-                        {...field}
-                        value={lat!}
-                      />
+                    <Input
+                      type="hidden"
+                      placeholder="Enter your address..."
+                      disabled={isPending}
+                      {...field}
+                      value={lat!}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -165,18 +198,18 @@ export const RegisterForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                      <Input
-                        type="hidden"
-                        placeholder="Enter your address..."
-                        disabled={isPending}
-                        {...field}
-                        value={lng!}
-                      />
+                    <Input
+                      type="hidden"
+                      placeholder="Enter your address..."
+                      disabled={isPending}
+                      {...field}
+                      value={lng!}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
-              />
+            />
             <FormField
               control={form.control}
               name="phone"
@@ -234,21 +267,18 @@ export const RegisterForm = () => {
           </div>
           <FormError message={error} />
           <FormSuccess message={success} />
-          <Button
-            disabled={isPending}
-            type="submit"
-            className="w-full  "
-          >
-            Create an account
+          <Button disabled={isPending} type="submit" className="w-full  ">
+            Update account
           </Button>
         </form>
       </Form>
-        <MapsModal
+      <MapsModal
         isOpen={open}
         onClose={() => setOpen(false)}
         onConfirm={onConfirm}
-        loading={loading}  
-        onAddressSelect={handleAddressSelect} />
-    </CardWrapper>
+        loading={loading}
+        onAddressSelect={handleAddressSelect}
+      />
+    </div>
   );
 };

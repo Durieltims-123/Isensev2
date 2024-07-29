@@ -6,8 +6,10 @@ import { UserNav } from "./user-nav";
 import Image from "next/image";
 import { useEffect } from "react";
 import { signOut, useSession } from "next-auth/react";
-
-export default function Header() {
+interface HeaderProps {
+  onOpenModal: () => void;
+}
+ const Header: React.FC<HeaderProps> = ({ onOpenModal }) => {
 
 
   return (
@@ -27,10 +29,11 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-2">
-          <UserNav />
+          <UserNav onOpenModal={onOpenModal}/>
           <ThemeToggle />
         </div>
       </nav>
     </div>
   );
 }
+export default Header;
