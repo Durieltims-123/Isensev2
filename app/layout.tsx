@@ -8,12 +8,11 @@ import { SessionProvider } from "next-auth/react";
 import { getSession } from "next-auth/react";
 // import { Session } from "next-auth/types";
 const inter = Inter({ subsets: ["latin"] });
-import { Session } from 'next-auth';
-
+import { Session } from "next-auth";
+import GoogleCaptchaWrapper from "@/components/auth/captcha-wrapper";
 export const metadata: Metadata = {
   title: "iSense",
 };
-
 
 // export default async function RootLayout({
 //   children,
@@ -33,8 +32,6 @@ export const metadata: Metadata = {
 //   )
 // }
 
-
-
 export default async function RootLayout({
   children,
 }: {
@@ -47,8 +44,10 @@ export default async function RootLayout({
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <SessionProvider session={session}>
-            <Toaster />
-            {children}
+            <GoogleCaptchaWrapper>
+              <Toaster />
+              {children}
+            </GoogleCaptchaWrapper>
           </SessionProvider>
         </ThemeProvider>
       </body>
